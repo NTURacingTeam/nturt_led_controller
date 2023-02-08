@@ -11,6 +11,7 @@ find_package(ament_cmake REQUIRED)
 find_package(can_msgs REQUIRED)
 find_package(rcl_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 
 include_directories(
         include
@@ -18,8 +19,8 @@ include_directories(
 
 # libraries
 # library: nturt_led_controller
-add_library(${PROJECT_NAME} STATIC
-        src/nturt_led_controller.cpp
+add_library(${PROJECT_NAME} SHARED
+        src/led_controller.cpp
 )
 target_link_libraries(${PROJECT_NAME}
         wiringPi
@@ -28,12 +29,17 @@ ament_target_dependencies(${PROJECT_NAME}
         can_msgs
         rcl_interfaces
         rclcpp
+        rclcpp_components
 )
+# register to node components
+# node component: LedController
+rclcpp_components_register_nodes(nturt_led_controller "LedController")
+set(node_plugins "${node_plugins}LedController;$<TARGET_FILE:nturt_led_controller>\n")
 
 # applications
 # executable: nturt_led_controller_node
 add_executable(${PROJECT_NAME}_node
-        app/nturt_led_controller_node.cpp
+        app/led_controller_node.cpp
 )
 target_link_libraries(${PROJECT_NAME}_node
         ${PROJECT_NAME}
@@ -42,14 +48,19 @@ ament_target_dependencies(${PROJECT_NAME}_node
         rclcpp
 )
 
-# install library
+# install headers
+install(DIRECTORY include/${PROJECT_NAME}
+        DESTINATION include
+)
+
+# install libraries
 install(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION bin
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
 )
 
-# install application, test executables
+# install applications, test executables
 install(TARGETS ${PROJECT_NAME}_node
         DESTINATION lib/${PROJECT_NAME}
 )
@@ -65,5 +76,19 @@ if(BUILD_TESTING)
         set(ament_cmake_cpplint_FOUND TRUE)
         ament_lint_auto_find_test_dependencies()
 endif()
+
+# export package dependencies
+ament_export_include_directories(
+        include
+)
+ament_export_libraries(
+        ${PROJECT_NAME}
+)
+ament_export_dependencies(
+        ament_cmake
+        can_msgs
+        rcl_interfaces
+        rclcpp
+)
 
 ament_package()

@@ -4,13 +4,13 @@
     <name>nturt_led_controller</name>
     <version>0.0.0</version>
     <description>ROS2 package for controlling leds connected to rpi that indicate the state of ros2.</description>
-    <maintainer email="jet22854111@gmail.com">docker</maintainer>
+    <maintainer email="jet22854111@gmail.com">QuantumSpawner</maintainer>
     <license>TODO</license>
 
     <!-- general dependencies-->
     <depend>can_msgs</depend>
-    <depend>rcl_interfaces</depend>
     <depend>rclcpp</depend>
+    <depend>rcl_interfaces</depend>
 
     <!-- build dependencies -->
     <buildtool_depend>ament_cmake</buildtool_depend>
