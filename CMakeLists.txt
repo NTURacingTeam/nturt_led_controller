@@ -36,8 +36,8 @@ ament_target_dependencies(${PROJECT_NAME}
 rclcpp_components_register_nodes(nturt_led_controller "LedController")
 set(node_plugins "${node_plugins}LedController;$<TARGET_FILE:nturt_led_controller>\n")
 
-# applications
-# executable: nturt_led_controller_node
+# executables
+# application: nturt_led_controller_node
 add_executable(${PROJECT_NAME}_node
         app/led_controller_node.cpp
 )
@@ -46,6 +46,14 @@ target_link_libraries(${PROJECT_NAME}_node
 )
 ament_target_dependencies(${PROJECT_NAME}_node
         rclcpp
+)
+
+# test: led_test
+add_executable(led_test
+        test/led_test.cpp
+)
+target_link_libraries(led_test
+        wiringPi
 )
 
 # install headers
@@ -60,8 +68,8 @@ install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION lib
 )
 
-# install applications, test executables
-install(TARGETS ${PROJECT_NAME}_node
+# install applications
+install(TARGETS ${PROJECT_NAME}_node led_test
         DESTINATION lib/${PROJECT_NAME}
 )
 

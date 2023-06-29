@@ -1,5 +1,18 @@
 #include "nturt_led_controller/led_controller.hpp"
 
+// std include
+#include <chrono>
+#include <functional>
+#include <memory>
+
+// gpio include
+#include <wiringPi.h>
+
+// nturt include
+#include "nturt_led_controller/project_def.hpp"
+
+using namespace std::chrono_literals;
+
 LedController::LedController(rclcpp::NodeOptions _options)
     : Node("nturt_led_controller_node", _options),
       can_sub_(this->create_subscription<can_msgs::msg::Frame>(
@@ -17,17 +30,17 @@ LedController::LedController(rclcpp::NodeOptions _options)
   wiringPiSetup();
   pinMode(LED_ROS_PIN, OUTPUT);
   pinMode(LED_CAN_PIN, OUTPUT);
-  pinMode(LED_SIGNAL_PIN, OUTPUT);
   pinMode(LED_WARN_PIN, OUTPUT);
   pinMode(LED_ERROR_PIN, OUTPUT);
+  pinMode(LED_RESERVED_PIN, OUTPUT);
 }
 
 void LedController::onShutdown() {
   digitalWrite(LED_ROS_PIN, LOW);
   digitalWrite(LED_CAN_PIN, LOW);
-  digitalWrite(LED_SIGNAL_PIN, LOW);
   digitalWrite(LED_WARN_PIN, LOW);
   digitalWrite(LED_ERROR_PIN, LOW);
+  digitalWrite(LED_RESERVED_PIN, LOW);
 }
 
 void LedController::onCan(const std::shared_ptr<can_msgs::msg::Frame> _msg) {
@@ -55,12 +68,12 @@ void LedController::onRosout(
 }
 
 void LedController::led_callback() {
-  if (!led_on_) {
+  if (!ros_led_on_) {
     digitalWrite(LED_ROS_PIN, HIGH);
-    led_on_ = true;
+    ros_led_on_ = true;
   } else {
     digitalWrite(LED_ROS_PIN, LOW);
-    led_on_ = false;
+    ros_led_on_ = false;
   }
 }
 

@@ -1,0 +1,11 @@
+#ifndef NTURT_LDE_CONTROLLER_PROJECT_DEF_HPP
+#define NTURT_LDE_CONTROLLER_PROJECT_DEF_HPP
+
+// led pin out in wiringpi fasion
+#define LED_ROS_PIN 27
+#define LED_CAN_PIN 28
+#define LED_WARN_PIN 24
+#define LED_ERROR_PIN 29
+#define LED_RESERVED_PIN 7
+
+#endif  // NTURT_LDE_CONTROLLER_PROJECT_DEF_HPP
